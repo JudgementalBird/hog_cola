@@ -1,10 +1,13 @@
 [package]
-name = "hog_coke"
+name = "hog_cola"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
 bevy = { version = "0.16.1", features = ["dynamic_linking"] }
+serde = "1.0.219"
+ron = "0.10.1"
+bevy-inspector-egui = "0.31.0"
 
 # Enable a small amount of optimization in the dev profile.
 [profile.dev]

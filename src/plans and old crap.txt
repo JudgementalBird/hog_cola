@@ -1,0 +1,187 @@
+What kinds of buttons do we have?
+
+"go to next scene" button, just takes you to next scene if not transitioning
+
+interactable entities:
+- A line of dialogue pops up.
+- A line of dialogue pops up, the specific line depends on your morality score.
+- A line of dialogue pops up, and you option to pick between "Yes" and "No". There is a unique line of dialogue for either option
+- A line of dialogue pops up, the specific line depends on your morality score. You also get a yes/no prompt and depending on your morality score you are or aren't able to press "No".
+Probably implement the interactiveness of entities by triggering events
+
+okay I did have one thought about interactions
+it comes down to the fact that interactions are centered around state
+so I think I'm gonna try to think of a way to store an interaction
+as data
+and then a way to interact with that data
+probably enums
+maybe resources? no unless it's a Vec<Interaction> or whatever and that doesnt really make sense
+I guess it should be component based
+I should probably have an interaction be an entity
+and then the entities that comprise the interaction (buttons, text, etc) are children of that entity
+so I guess the interaction state is a component on the entity then
+or I guess since there should only be one interaction at a time, it kinda makes sense to have it in a resource too..
+hmm
+picking up an item means triggering an event that has an observer that despawns the entity in question and puts the item in your inventory
+
+I think it should probably be a resource since there is only ever to be one interaction.
+
+// pub(crate) fn scale_sprites_relative_to_window(
+//     mut query: Query<(&mut Transform, &Sprite, &ScaledRelativeToWindow)>,
+//     images: Res<Assets<Image>>,
+//     window: Single<&Window>
+// ) {
+//     for (mut transform,sprite, rescale_factor) in query.iter_mut() {
+//         if let Some(image) = images.get(sprite.image.id()) {
+//             match rescale_factor {
+//                 ScaledRelativeToWindow::BothAxes(final_factor) => {
+//                     let change = (window.physical_size().as_vec2()/image.size_f32())*final_factor;
+//                     transform.scale = change.extend(0.0);
+//                 }
+//                 ScaledRelativeToWindow::ByWidth(final_factor) => {
+//                     let change = (window.physical_size().x as f32 / image.width() as f32)*final_factor;
+//                     transform.scale = Vec3::from_array([change,change,0.]);
+//                 }
+//             }
+//         }
+        
+//     }   
+// }
+
+
+// #[derive(Component)]
+// struct MainMenuButton;
+// pub(crate) fn init_menu(mut commands: Commands, server: Res<AssetServer>) {
+//     commands.spawn(Camera2d);
+//     commands.spawn((
+//         Sprite::from_image(server.load("images/menu_placeholder.png")),
+//         Transform::from_xyz(0., 0., 0.),
+//         ScaledRelativeToWindow::BothAxes(1.0),
+//         BelongsTo(MyAppState::Menu)
+//     ));
+//     commands.spawn((
+//         Sprite::from_image(server.load("images/start_button.png")),
+//         Transform::from_xyz(0., -200., 1.),
+//         ScaledRelativeToWindow::ByWidth(1./8.),
+//         MainMenuButton,
+//         BelongsTo(MyAppState::Menu)
+//     ));
+// }
+// fn transition_if_start_button_clicked(
+//     q_windows: Query<&Window, With<PrimaryWindow>>,
+//     sprite_query: Query<(&Transform, &Sprite), With<MainMenuButton>>,
+//     assets: Res<Assets<Image>>,
+//     mut commands: Commands
+// ) {
+//     if let Ok((transform, sprite)) = sprite_query.single() {
+//         let image_dimensions = assets.get(sprite.image.id()).unwrap().size();
+//         let scaled_image_dimension = image_dimensions.as_vec2() * transform.scale.truncate();
+//         let bounding_box = Rect::from_center_size(transform.translation.truncate(), scaled_image_dimension);
+//         let mut mouse_pos = q_windows.single().unwrap().cursor_position().expect("Mouse pos unavailable :(") - Vec2 { x: 1280./2., y: 720./2. };
+//         mouse_pos.y *= -1.;
+//         // println!("{:?}  -  {:?}",bounding_box,mouse_pos);
+//         if bounding_box.contains(mouse_pos) {
+//             commands.trigger(StartTransition);
+//             //println!("Triggered `StartTransition` from `transition_if_start_button_clicked`!");
+//         }
+//     }
+// }
+
+
+// .add_systems(Update,(
+//     scale_sprites_relative_to_window,
+//     
+// ))
+
+// fn transition_if_start_button_clicked(
+//     q_windows: Query<&Window, With<PrimaryWindow>>,
+//     sprite_query: Query<(&Transform, &Sprite), With<MainMenuButton>>,
+//     assets: Res<Assets<Image>>,
+//     mut commands: Commands
+// ) {
+//     if let Ok((transform, sprite)) = sprite_query.single() {
+//         let image_dimensions = assets.get(sprite.image.id()).unwrap().size();
+//         let scaled_image_dimension = image_dimensions.as_vec2() * transform.scale.truncate();
+//         let bounding_box = Rect::from_center_size(transform.translation.truncate(), scaled_image_dimension);
+//         let mut mouse_pos = q_windows.single().unwrap().cursor_position().expect("Mouse pos unavailable :(") - Vec2 { x: 1280./2., y: 720./2. };
+//         mouse_pos.y *= -1.;
+//         // println!("{:?}  -  {:?}",bounding_box,mouse_pos);
+//         if bounding_box.contains(mouse_pos) {
+//             commands.trigger(StartTransition);
+//             //println!("Triggered `StartTransition` from `transition_if_start_button_clicked`!");
+//         }
+//     }
+// }
+
+
+
+    // commands.spawn((
+    //     Node {
+    //         width: Val::Percent(100.),
+    //         height: Val::Percent(100.),
+    //         justify_content: JustifyContent::Center,
+    //         align_items: AlignItems::Center,
+    //         ..default()
+    //     },
+    //     children![(
+    //         Node {
+    //             width: Val::Px(200.),
+    //             height: Val::Px(80.),
+    //             justify_content: JustifyContent::Center,
+    //             align_items: AlignItems::Center,
+    //             margin: UiRect::all(Val::Px(5.)),
+    //             ..default()
+    //         },
+    //         TextLayout::new(JustifyText::Center, LineBreak::AnyCharacter),
+    //         BackgroundColor(Color::srgb(0.816, 0.847, 0.694)),
+    //         // BorderColor(Color::srgb(0., 0., 0.)),
+    //         Outline::new(Val::Px(5.0), Val::Px(0.0), Color::srgb(0.0, 0.0, 0.0)),
+    //         Text::new("hi"),
+
+    //         TextColor(Color::srgb(0., 0., 0.)),
+    //         TextFont {
+    //             font_size: 40.,
+    //             ..Default::default()
+    //         },
+    //     )]
+    // ));
+            // Node {
+            //     width: Val::Percent(20.),
+            //     height: Val::Percent(20.),
+            //     ..default()
+            // },
+            // // BackgroundColor(Color::srgb(0.565, 0.106, 0.6)),
+            // children![(
+                
+            // )]
+            // TextColor(Color::srgb(0.565, 0.106, 0.6)), // Purple
+            // Text::new("hi"),
+        // Node {
+        //     width: Val::Percent(100.),
+        //     height: Val::Percent(100.),
+        //     justify_content: JustifyContent::Center,
+        //     align_items: AlignItems::Center,
+        //     ..default()
+        // },
+        // children![(
+        //     // Node {
+        //     //     width: Val::Px(200.),
+        //     //     height: Val::Px(80.),
+        //     //     justify_content: JustifyContent::Center,
+        //     //     align_items: AlignItems::Center,
+        //     //     margin: UiRect::all(Val::Px(5.)),
+        //     //     ..default()
+        //     // },
+        //     BackgroundColor(Color::srgb(0.525, 0.624, 0.145)),// Lime
+        //     children![(
+        //         TextColor(Color::srgb(0.565, 0.106, 0.6)), // Purple
+        //         Text::new("hi"),
+        //     )]
+        // )]
+    // commands.spawn((
+    //     Sprite::from_image(server.load("images/start_button.png")),
+    //     Transform::from_xyz(0., -200., 1.),
+    //     ScaledRelativeToWindow::ByWidth(1./8.),
+    //     MainMenuButton,
+    //     BelongsTo(MyAppState::Menu)
+    // ));
