@@ -1,0 +1,2 @@
+# Collaborative WIP point and click game with Bevy/Rust
+Assets, and 90% of writing & game design by my friend Nova. Originally planned as our submission for a bevy gamejam. Very much a learning experience.
