@@ -22,6 +22,7 @@ fn init_bedroom(
     mut commands: Commands,
     server: Res<AssetServer>,
 ) {
+    // actual background asset
     commands.spawn((
         BelongsTo(MyAppState::ExpositionBedroom),
         Node {
@@ -34,6 +35,7 @@ fn init_bedroom(
         ImageNode::new(server.load("images/bedroom/bedroom_background.png")),
     ));
 
+    // black square that covers screen
     let mut black_square_imagenode = ImageNode::new(server.load("images/black square lol.png"));
     black_square_imagenode.color.set_alpha(1.);
     commands.spawn((
@@ -49,12 +51,15 @@ fn init_bedroom(
         black_square_imagenode,
         BedroomBlackSquare,
     ));
+
     let monologue = [
             "Mr. Shit, a man in his late 20s, lived a straightforward and honest life.",
             "He knew not to worry too hard, and that hard work paid off.",
             "One day, Mr. Shit woke up feeling,",
             "A Little Off...",
         ];
+
+    // UI of text
     commands.spawn((
         BelongsTo(MyAppState::ExpositionBedroom),
         ZIndex(Z_LEVEL_UI+2),
